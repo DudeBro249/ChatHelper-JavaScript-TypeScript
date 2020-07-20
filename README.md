@@ -3,7 +3,7 @@ High-level chat client TypeScript API that makes sending messages between comput
 
 ## Installation
 
-Use the package manager [npm](https://www.npmjs.com/) to install foobar.
+Use the package manager [npm](https://www.npmjs.com/) to install chathelper.
 
 ```bash
 npm install chathelper --save
