@@ -24,7 +24,7 @@ const server = new Server("192.168.xx.xxx:8000", 2)
 ```typescript
 import { Client } from 'chatHelper'
 
-const server = new Client("http://192.168.xx.xxx:8000/", "client1", "12345")
+const client = new Client("http://192.168.xx.xxx:8000/", "client1", "12345")
 ```
 
 ## Documentation
@@ -34,9 +34,9 @@ const server = new Client("http://192.168.xx.xxx:8000/", "client1", "12345")
 ```typescript
 import { Server } from 'chatHelper'
 
-const server = new Server(port: number, connections: number)
+const server = new Server(port: string, connections: number)
 ```
-- port is the port that the server will be running on: integer like 8000
+- port is the port that the server will be running on: string like "192.168.xx.xxx:8000"
 -  connections is the number of connections that the server is meant to receive: integer like 2
 
 Returns a Server object and starts the express server on your system
