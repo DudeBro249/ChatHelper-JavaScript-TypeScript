@@ -1,0 +1,31 @@
+{
+  "name": "chathelper",
+  "version": "1.0.5",
+  "description": "High-level chat client API that makes sending messages between computers(using http) easy.",
+  "main": "lib/index.js",
+  "types": "lib",
+  "homepage": "https://github.com/DudeBro249/ChatHelper-TypeScript",
+  "scripts": {
+    "build": "tsc -p ."
+  },
+  "keywords": [
+    "socket",
+    "chat",
+    "server",
+    "client",
+    "message",
+    "http"
+  ],
+  "author": "WeServe Technologies",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.7",
+    "@types/node": "^14.0.14",
+    "express": "^4.17.1",
+    "queue-fifo": "^0.2.6",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.6"
+  }
+}
