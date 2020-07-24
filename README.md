@@ -1,5 +1,5 @@
 # ChatHelper
-High-level chat client TypeScript API that makes sending messages between computers(using http) easy.
+High-level chat client JavaScript and TypeScript API that makes sending messages between computers(using http) easy.
 
 ## Installation
 
