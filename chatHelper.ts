@@ -162,7 +162,12 @@ class Server {
                 console.log('The value of messages is: ')
                 console.log(messages)
 
-                return res.json(messages)
+                if(messages != [ null ]) {
+                    return res.json(messages)
+                }
+                else {
+                    return res.sendStatus(400)
+                }
             }
             else {
                 return res.sendStatus(403)
@@ -328,8 +333,8 @@ class Client {
         request.setRequestHeader('Content-Type', 'application/json')
         request.send(JSON.stringify(postData));
 
-        if (request.status === 403) {
-            return 1
+        if (request.status === 403 || request.status === 400) {
+            return 1 // Error and exit
         }
         else {
             return JSON.parse(request.responseText)
