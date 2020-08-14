@@ -23,6 +23,8 @@ declare class Client {
     sendMessage(recipient: string, message: string): 1 | 0;
     sendGroupMessage(groupName: string, message: string): 1 | 0;
     startListening(onmessage: CallableFunction): void;
+    resetServer(): 1 | 0;
+    stopListening(): void;
 }
 declare class Group {
     url: string;

@@ -57,7 +57,7 @@ class Server {
         server.app.post('/initializeGroup', function (req, res) {
             const data = req.body
             const groupName = data['groupName'].toString()
-            const clientList = data['clientList'].toString()
+            const clientList = data['clientList']
 
             if (server.groups.hasOwnProperty(groupName) == false && server.__isReady()) {
                 server.groups[groupName] = clientList
@@ -169,16 +169,19 @@ class Server {
 
         })
 
-        server.app.post('/reset', function (req, res) {
-            const data = req.body
-            const clientname: string = data['clientname'].toString()
-            const password: string = data['password'].toString()
+        server.app.get('/reset', function (req, res) {
+            if(req.headers.authorization) {
+                const [clientname, password] = req.headers.authorization.split(":")
 
-            if (server.__isAuth(clientname, password) === true && server.__isReady() === true) {
-                server.existingconnections = 0
-                server.clients = {}
-                server.groups = {}
-                return res.sendStatus(200)
+                if (server.__isAuth(clientname, password) === true && server.__isReady() === true) {
+                    server.existingconnections = 0
+                    server.clients = {}
+                    server.groups = {}
+                    return res.sendStatus(200)
+                }
+                else {
+                    return res.sendStatus(400)
+                }
             }
             else {
                 return res.sendStatus(400)
@@ -344,6 +347,30 @@ class Client {
         this.__listener.onerror = function (event: MessageEvent) {
             throw `Error! The client is unable to receive messages from the server: Status code: ${(event as any).status}\n
             The requested url was ${listen_url.toString()}`
+        }
+    }
+
+    resetServer() {
+        this.stopListening()
+        let reset_url = this.url + 'reset'
+
+        var request = new xmlhttprequest();
+        request.open('GET', reset_url, false);  // `false` makes the request synchronous
+        request.setRequestHeader('Content-Type', 'application/json')
+        request.setRequestHeader('Authorization', `${this.name}:${this.password}`.toString())
+        request.send()
+
+        if (request.status === 200) {
+            return 0 // Clean exit
+        }
+        else {
+            return 1 // Error and exit
+        }
+    }
+
+    stopListening() {
+        if(this.__listener) {
+            this.__listener.close()
         }
     }
 
