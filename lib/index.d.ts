@@ -1,28 +1,30 @@
 import express from 'express';
+import EventSource from 'eventsource';
 declare function _sleep(milliseconds: number): void;
 declare class Server {
     app: express.Express;
     port: number;
+    host: string;
     connections: number;
     existingconnections: number;
-    host: string;
     clients: any;
     groups: any;
     constructor(hostname: string, connections: number);
     private __parseHost;
+    private __isAuth;
+    private __isReady;
     private __runServer;
 }
 declare class Client {
     url: string;
     name: string;
     password: string;
+    __listener: EventSource | null;
     constructor(url: string, name: string, password: string);
-    private _checkInit;
-    initialize(): number;
+    private __initialize;
     sendMessage(recipient: string, message: string): 1 | 0;
     sendGroupMessage(groupName: string, message: string): 1 | 0;
-    getMessage(number: number): any;
-    getGroupMessage(groupName: string, number: number): any;
+    startListening(onmessage: CallableFunction): void;
 }
 declare class Group {
     url: string;
@@ -34,5 +36,12 @@ declare class Group {
     private __checkClient;
     private __initializeGroup;
 }
-export { Server, Client, Group, _sleep };
+declare class Message {
+    author: string;
+    content: string;
+    is_group_message: boolean;
+    group_name: string | null;
+    constructor(author: string, content: string, is_group_message: boolean, group_name: string | null);
+}
+export { Server, Client, Message, Group, _sleep };
 //# sourceMappingURL=index.d.ts.map
