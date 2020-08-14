@@ -14,27 +14,20 @@ function _sleep(milliseconds: number) {
 
 class Server {
     app: express.Express
-    port: number
-    host: string
+    port: any
     connections: number
     existingconnections: number
     clients: any
     groups: any
 
-    constructor(hostname: string, connections: number) {
+    constructor(port: any, connections: number) {
         this.app = express()
-        this.host = (this.__parseHost(hostname)[0]).toString()
-        this.port = parseInt(this.__parseHost(hostname)[1])
+        this.port = port
         this.connections = connections
         this.existingconnections = 0
         this.clients = {} // structure is {clientname: [clientPassword, Queue()]}
         this.groups = {} // structure is {groupName: clientList}
         this.__runServer()
-    }
-
-    private __parseHost(hostname: string) {
-        const split_hostname = hostname.split(":")
-        return split_hostname
     }
 
     private __isAuth(clientname: string, password: string): boolean {
@@ -226,7 +219,7 @@ class Server {
             }
         })
 
-        server.app.listen(server.port, server.host, function () {
+        server.app.listen(server.port, function () {
 
         })
     }
