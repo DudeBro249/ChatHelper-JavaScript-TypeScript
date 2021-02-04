@@ -3,7 +3,6 @@ const xmlhttprequest = require("xmlhttprequest").XMLHttpRequest;
 import Queue from 'queue-fifo'
 import EventSource from 'eventsource'
 
-
 function _sleep(milliseconds: number) {
     const date = Date.now();
     let currentDate = null;
@@ -88,7 +87,7 @@ class Server {
                             let data = JSON.stringify({
                                 "message": "ready"
                             })
-                            res.write(`${data}`)
+                            res.write(`${data}\n\n`)
                             res.end()
                             return
                         }
@@ -192,16 +191,19 @@ class Server {
 
             if (req.headers.authorization) {
                 const [clientname, password] = req.headers.authorization.split(":")
+                console.log(`Got request to /listen from ${clientname} ${password}`)
 
                 if (server.__isAuth(clientname, password) && server.__isReady()) {
                     let interval = setInterval(function () {
                         const clientQueue: Queue<any> = server.clients[clientname][1]
                         const messages = clientQueue.dequeue()
                         if (messages === null) {
+                            console.log(`No messages to send to ${clientname}...writing this to res`)
                             res.write(`data: ${'no messages'}\n\n`)
                         }
                         else {
                             let data = JSON.stringify(messages)
+                            console.log(`ATTENTION 😂😂! Sending messages: ${data} to ${clientname}`)
                             res.write(`data: ${data}\n\n`)
                         }
 
@@ -244,30 +246,18 @@ class Client {
 
 
     private __initialize() {
-        var init_url = this.url + "initialize"
-
-        while (true) {
-            var request = new xmlhttprequest();
-
-            request.open('GET', init_url, false);  // `false` makes the request synchronous
-            request.setRequestHeader('Content-Type', 'application/json')
-            request.setRequestHeader('Authorization', `${this.name}:${this.password}`.toString())
-            request.send()
-
-            const responseArray: any[] = (request.responseText as string).split('\n\n')
-            for (let i = 0; i < responseArray.length; i++) {
-                responseArray[i] = JSON.parse(responseArray[i])
-            }
-
-            let responseText = responseArray[responseArray.length - 1]
-            if (responseText['message'] === 'ready') {
-                break
-            }
-        }
+        
+        const init_url = this.url + "initialize"
+        
+        var request = new xmlhttprequest();
+        request.open('GET', init_url, false);
+        request.setRequestHeader('Content-Type', 'application/json')
+        request.setRequestHeader('Authorization', `${this.name}:${this.password}`.toString())
+        
+        request.send();
     }
 
     sendMessage(recipient: string, message: string) {
-
         const send_url = this.url + "sendmessage"
 
         const postData = {
@@ -290,6 +280,7 @@ class Client {
     }
 
     sendGroupMessage(groupName: string, message: string) {
+        
         const send_url = this.url + "sendGroupMessage"
 
         const postData = {
@@ -312,6 +303,7 @@ class Client {
     }
 
     startListening(onmessage: CallableFunction) {
+
         let listen_url = this.url + "listen"
 
         this.__listener = new EventSource(listen_url, {
@@ -351,6 +343,7 @@ class Client {
     }
 
     resetServer() {
+
         this.stopListening()
         let reset_url = this.url + 'reset'
 
